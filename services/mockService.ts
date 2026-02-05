@@ -1,4 +1,4 @@
-import { User, Medal, Post } from '../types';
+import { User, Medal, Post, Product } from '../types';
 
 // --- Initial Data ---
 
@@ -81,6 +81,51 @@ export const MEDALS: Medal[] = [
     colorBg: 'bg-rose-50',
     colorBorder: 'border-rose-200',
     textColor: 'text-rose-600'
+  }
+];
+
+export const PRODUCTS: Product[] = [
+  {
+    id: 'prod1',
+    name: 'Coffee Voucher',
+    image: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=300&q=80',
+    price: 50,
+    stock: 20
+  },
+  {
+    id: 'prod2',
+    name: 'Company Hoodie',
+    image: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=300&q=80',
+    price: 350,
+    stock: 5
+  },
+  {
+    id: 'prod3',
+    name: 'Movie Ticket',
+    image: 'https://images.unsplash.com/photo-1489599849909-5d420309736d?auto=format&fit=crop&w=300&q=80',
+    price: 80,
+    stock: 15
+  },
+  {
+    id: 'prod4',
+    name: 'Mechanical Keyboard',
+    image: 'https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&w=300&q=80',
+    price: 1200,
+    stock: 2
+  },
+  {
+    id: 'prod5',
+    name: '1 Hr Paid Leave',
+    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=300&q=80',
+    price: 500,
+    stock: 10
+  },
+  {
+    id: 'prod6',
+    name: 'Lunch with CEO',
+    image: 'https://images.unsplash.com/photo-1551632436-cbf8dd354ca8?auto=format&fit=crop&w=300&q=80',
+    price: 2000,
+    stock: 1
   }
 ];
 

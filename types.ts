@@ -41,11 +41,20 @@ export interface Post {
   comments: Comment[];
 }
 
+export interface Product {
+  id: string;
+  name: string;
+  image: string;
+  price: number;
+  stock: number;
+}
+
 // For UI State
 export enum View {
   HOME = 'HOME',
   LEADERBOARD = 'LEADERBOARD',
   CREATE = 'CREATE',
   ADMIN = 'ADMIN',
-  PROFILE = 'PROFILE'
+  PROFILE = 'PROFILE',
+  MALL = 'MALL'
 }

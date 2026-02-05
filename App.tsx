@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { User, Post, View, Medal } from './types';
-import { USERS, POSTS, MEDALS, getMedalById } from './services/mockService';
+import { User, Post, View, Medal, Product } from './types';
+import { USERS, POSTS, MEDALS, PRODUCTS, getMedalById } from './services/mockService';
 import TabBar from './components/TabBar';
 import FeedCard from './components/FeedCard';
-import { Search, Bell, BarChart2, Briefcase, Plus, Coins, Zap, Users, ShieldCheck, ChevronRight, Gift } from 'lucide-react';
+import { Search, Bell, BarChart2, Briefcase, Plus, Coins, Zap, Users, ShieldCheck, ChevronRight, Gift, ArrowLeft, ShoppingBag } from 'lucide-react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell } from 'recharts';
 
 const App: React.FC = () => {
@@ -15,6 +15,7 @@ const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>(POSTS);
   const [users, setUsers] = useState<User[]>(USERS);
   const [medals] = useState<Medal[]>(MEDALS);
+  const [products, setProducts] = useState<Product[]>(PRODUCTS);
 
   // Form State
   const [selectedReceivers, setSelectedReceivers] = useState<string[]>([]);
@@ -90,6 +91,31 @@ const App: React.FC = () => {
     setSelectedReceivers([]);
     setCurrentView(View.HOME);
     setFeedbackMsg("Award sent successfully!");
+    setTimeout(() => setFeedbackMsg(null), 3000);
+  };
+
+  const handleRedeem = (product: Product) => {
+    if (product.stock <= 0) {
+      setFeedbackMsg("Item out of stock");
+      setTimeout(() => setFeedbackMsg(null), 3000);
+      return;
+    }
+
+    if (currentUser.walletBalance < product.price) {
+       setFeedbackMsg(`Insufficient coins. Need ${product.price}, have ${currentUser.walletBalance.toFixed(0)}`);
+       setTimeout(() => setFeedbackMsg(null), 3000);
+       return;
+    }
+
+    // Deduct stock
+    setProducts(prev => prev.map(p => p.id === product.id ? { ...p, stock: p.stock - 1 } : p));
+
+    // Deduct wallet
+    const updatedUser = { ...currentUser, walletBalance: currentUser.walletBalance - product.price };
+    setCurrentUser(updatedUser);
+    setUsers(users.map(u => u.id === updatedUser.id ? updatedUser : u));
+
+    setFeedbackMsg(`Successfully redeemed ${product.name}!`);
     setTimeout(() => setFeedbackMsg(null), 3000);
   };
 
@@ -358,10 +384,61 @@ const App: React.FC = () => {
                 </div>
             </div>
 
-            <button className="w-full bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between hover:bg-slate-50">
+            <button 
+              onClick={() => setCurrentView(View.MALL)}
+              className="w-full bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between hover:bg-slate-50"
+            >
                 <span className="font-semibold text-slate-700">Redeem Shop</span>
                 <ChevronRight className="text-slate-400" size={20} />
             </button>
+        </main>
+    </div>
+  );
+
+  const renderMall = () => (
+    <div className="pb-20 min-h-screen bg-slate-50">
+        <header className="bg-white p-4 sticky top-0 z-10 flex items-center gap-3 border-b border-slate-200">
+            <button onClick={() => setCurrentView(View.PROFILE)} className="text-slate-600 p-1">
+                <ArrowLeft size={24} />
+            </button>
+            <h2 className="font-bold text-lg flex-1">Redeem Shop</h2>
+            <div className="flex items-center gap-1 bg-primary-50 px-2 py-1 rounded-full text-primary-700 text-sm font-bold">
+                <Coins size={14} />
+                {currentUser.walletBalance.toFixed(0)}
+            </div>
+        </header>
+
+        <main className="p-4 grid grid-cols-2 gap-4 max-w-2xl mx-auto">
+            {products.map(product => (
+                <div key={product.id} className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden flex flex-col">
+                    <div className="h-32 bg-slate-200 relative">
+                        <img src={product.image} className="w-full h-full object-cover" alt={product.name} />
+                        {product.stock <= 0 && (
+                            <div className="absolute inset-0 bg-black/50 flex items-center justify-center text-white font-bold text-sm">
+                                OUT OF STOCK
+                            </div>
+                        )}
+                    </div>
+                    <div className="p-3 flex-1 flex flex-col">
+                        <h3 className="font-semibold text-sm text-slate-800 mb-1">{product.name}</h3>
+                        <div className="text-xs text-slate-500 mb-3">{product.stock} left</div>
+                        <div className="mt-auto flex items-center justify-between">
+                            <span className="font-bold text-primary-600 text-sm">{product.price} Coins</span>
+                        </div>
+                        <button 
+                            onClick={() => handleRedeem(product)}
+                            disabled={product.stock <= 0 || currentUser.walletBalance < product.price}
+                            className={`mt-2 w-full py-2 rounded-lg text-xs font-bold transition-colors ${
+                                product.stock > 0 && currentUser.walletBalance >= product.price
+                                ? 'bg-primary-600 text-white hover:bg-primary-700'
+                                : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                            }`}
+                        >
+                            Redeem
+                        </button>
+                    </div>
+                </div>
+            ))}
         </main>
     </div>
   );
@@ -455,13 +532,25 @@ const App: React.FC = () => {
       {currentView === View.LEADERBOARD && renderLeaderboard()}
       {currentView === View.CREATE && renderCreate()}
       {currentView === View.PROFILE && renderProfile()}
+      {currentView === View.MALL && renderMall()}
       {currentView === View.ADMIN && renderAdmin()}
 
-      <TabBar 
-        currentView={currentView} 
-        onChange={setCurrentView} 
-        isAdmin={currentUser.role === 'admin'} 
-      />
+      {/* Hide TabBar on Mall view to prevent clutter, or keep it. Let's keep it for easy nav, but typically detail views hide tabs in mobile apps.
+          But here, let's keep it simple. */}
+      {currentView !== View.MALL && (
+        <TabBar 
+            currentView={currentView} 
+            onChange={setCurrentView} 
+            isAdmin={currentUser.role === 'admin'} 
+        />
+      )}
+      
+      {/* Toast Feedback */}
+      {feedbackMsg && (
+        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-slate-800 text-white px-6 py-3 rounded-lg shadow-2xl z-50 text-sm font-medium animate-fade-in">
+            {feedbackMsg}
+        </div>
+      )}
     </div>
   );
 };
