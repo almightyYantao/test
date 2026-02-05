@@ -1,15 +1,18 @@
 import React from 'react';
-import { Post, User } from '../types';
+import { Post, User, Language } from '../types';
 import { getUserById, getMedalById } from '../services/mockService';
 import { Heart, MessageCircle, Gift, ThumbsUp } from 'lucide-react';
+import { TranslationKey } from '../services/i18n';
 
 interface FeedCardProps {
   post: Post;
   currentUser: User;
   onLike: (postId: string) => void;
+  t: (key: TranslationKey) => string;
+  lang: Language;
 }
 
-const FeedCard: React.FC<FeedCardProps> = ({ post, currentUser, onLike }) => {
+const FeedCard: React.FC<FeedCardProps> = ({ post, currentUser, onLike, t, lang }) => {
   const sender = getUserById(post.senderId);
   const medal = getMedalById(post.medalId);
   
@@ -17,12 +20,18 @@ const FeedCard: React.FC<FeedCardProps> = ({ post, currentUser, onLike }) => {
 
   const receiverNames = post.receiverIds.map(id => getUserById(id)?.name).join(', ');
 
-  // Format relative time (simplified)
+  // Format relative time (localized)
   const timeAgo = (dateStr: string) => {
     const diff = Date.now() - new Date(dateStr).getTime();
     const hours = Math.floor(diff / (1000 * 60 * 60));
-    if (hours < 24) return `${hours}h ago`;
-    return `${Math.floor(hours / 24)}d ago`;
+    
+    if (hours < 1) return t('justNow');
+    
+    if (hours < 24) {
+      return `${hours}${t('h')} ${t('ago')}`;
+    }
+    const days = Math.floor(hours / 24);
+    return `${days}${t('d')} ${t('ago')}`;
   };
 
   return (
@@ -52,7 +61,7 @@ const FeedCard: React.FC<FeedCardProps> = ({ post, currentUser, onLike }) => {
 
       {/* Action Statement */}
       <div className="mb-3 text-sm text-slate-700">
-        Awarded <span className="font-semibold text-primary-600">{receiverNames}</span>
+        {t('awarded')} <span className="font-semibold text-primary-600">{receiverNames}</span>
       </div>
 
       {/* SBI Content */}
@@ -67,7 +76,7 @@ const FeedCard: React.FC<FeedCardProps> = ({ post, currentUser, onLike }) => {
         </div>
         <div className="flex-1">
           <div className={`font-bold text-lg ${medal.textColor}`}>
-            {medal.value.toFixed(2)} <span className="text-xs font-medium text-slate-500">Energy Coins</span>
+            {medal.value.toFixed(2)} <span className="text-xs font-medium text-slate-500">{t('coins')}</span>
           </div>
           <div className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">
             {medal.name}
@@ -91,17 +100,17 @@ const FeedCard: React.FC<FeedCardProps> = ({ post, currentUser, onLike }) => {
           
           <button className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700">
             <MessageCircle size={18} />
-            <span>{post.comments.length > 0 ? 'Comment' : 'Comment'}</span>
+            <span>{post.comments.length > 0 ? t('comment') : t('comment')}</span>
           </button>
 
           <button className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700">
             <Gift size={18} />
-            <span>Bonus</span>
+            <span>{t('bonus')}</span>
           </button>
         </div>
         
         <button className="flex items-center gap-1 text-xs text-slate-400">
-            <span>Details</span>
+            <span>{t('details')}</span>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
         </button>
       </div>

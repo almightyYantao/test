@@ -4,7 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Employee Energy Rewards</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 
+      NOTE: In a full production environment with a build step (Node.js/Vite/Webpack), 
+      Tailwind should be installed via npm (postcss-loader). 
+      For this browser-only preview environment, we use the standalone script.
+    -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio&v=3.4.1"></script>
     <script>
       tailwind.config = {
         theme: {

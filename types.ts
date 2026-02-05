@@ -1,3 +1,5 @@
+export type Language = 'en' | 'zh';
+
 export interface User {
   id: string;
   name: string;
