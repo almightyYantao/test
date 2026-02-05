@@ -4,59 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Employee Energy Rewards</title>
-    <!-- 
-      NOTE: In a full production environment with a build step (Node.js/Vite/Webpack), 
-      Tailwind should be installed via npm (postcss-loader). 
-      For this browser-only preview environment, we use the standalone script.
-    -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio&v=3.4.1"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              brand: {
-                50: '#f0fdfa',
-                100: '#ccfbf1',
-                500: '#14b8a6', // Teal-ish for "Energy"
-                600: '#0d9488',
-                900: '#134e4a',
-              },
-              primary: {
-                50: '#eff6ff',
-                100: '#dbeafe',
-                500: '#3b82f6',
-                600: '#2563eb',
-              }
-            }
-          }
-        }
-      }
-    </script>
-    <style>
-      /* Hide scrollbar for Chrome, Safari and Opera */
-      .no-scrollbar::-webkit-scrollbar {
-          display: none;
-      }
-      /* Hide scrollbar for IE, Edge and Firefox */
-      .no-scrollbar {
-          -ms-overflow-style: none;  /* IE and Edge */
-          scrollbar-width: none;  /* Firefox */
-      }
-    </style>
   <script type="importmap">
 {
   "imports": {
     "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
-    "recharts": "https://esm.sh/recharts@^3.7.0",
     "react/": "https://esm.sh/react@^19.2.4/",
     "react": "https://esm.sh/react@^19.2.4",
-    "lucide-react": "https://esm.sh/lucide-react@^0.563.0"
+    "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
+    "recharts": "https://esm.sh/recharts@^3.7.0"
   }
 }
 </script>
 </head>
   <body class="bg-slate-50 text-slate-900 font-sans antialiased">
     <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
   </body>
 </html>
