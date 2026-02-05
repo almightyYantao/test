@@ -1,18 +1,16 @@
 import React from 'react';
-import { Post, User, Language } from '../types';
+import { Post } from '../types';
 import { getUserById, getMedalById } from '../services/mockService';
-import { Heart, MessageCircle, Gift, ThumbsUp } from 'lucide-react';
+import { Heart, MessageCircle, Gift } from 'lucide-react';
 import { TranslationKey } from '../services/i18n';
 
 interface FeedCardProps {
   post: Post;
-  currentUser: User;
   onLike: (postId: string) => void;
   t: (key: TranslationKey) => string;
-  lang: Language;
 }
 
-const FeedCard: React.FC<FeedCardProps> = ({ post, currentUser, onLike, t, lang }) => {
+const FeedCard: React.FC<FeedCardProps> = ({ post, onLike, t }) => {
   const sender = getUserById(post.senderId);
   const medal = getMedalById(post.medalId);
   

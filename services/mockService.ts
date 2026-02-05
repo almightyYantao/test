@@ -161,7 +161,7 @@ export const POSTS: Post[] = [
 export const getUserById = (id: string) => USERS.find(u => u.id === id);
 export const getMedalById = (id: string) => MEDALS.find(m => m.id === id);
 
-export const calculateLeaderboard = (period: 'week' | 'month' | 'total', allUsers: User[]) => {
+export const calculateLeaderboard = (_period: 'week' | 'month' | 'total', allUsers: User[]) => {
     // In a real app, this would filter transaction history.
     // Here we just sort by walletBalance for demo purposes.
     return [...allUsers].sort((a, b) => b.walletBalance - a.walletBalance);

@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { User, Post, View, Medal, Product, Language } from './types';
 import { USERS, POSTS, MEDALS, PRODUCTS, getMedalById } from './services/mockService';
 import { translations, TranslationKey } from './services/i18n';
 import TabBar from './components/TabBar';
 import FeedCard from './components/FeedCard';
-import { Search, Bell, BarChart2, Briefcase, Plus, Coins, Zap, Users, ShieldCheck, ChevronRight, Gift, ArrowLeft, ShoppingBag, Globe } from 'lucide-react';
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell } from 'recharts';
+import { Bell, Briefcase, Plus, Coins, Zap, Users, ShieldCheck, ChevronRight, Gift, ArrowLeft, Globe } from 'lucide-react';
+import { ResponsiveContainer, BarChart, Bar, XAxis, Tooltip, Cell } from 'recharts';
 
 const App: React.FC = () => {
   // Global State
@@ -159,7 +159,7 @@ const App: React.FC = () => {
       {/* Feed */}
       <main className="max-w-2xl mx-auto pt-4 md:px-4">
         {posts.map(post => (
-          <FeedCard key={post.id} post={post} currentUser={currentUser} onLike={handleLike} t={t} lang={language} />
+          <FeedCard key={post.id} post={post} onLike={handleLike} t={t} />
         ))}
         <div className="text-center text-slate-400 text-sm py-6">
             {t('caughtUp')}
@@ -171,8 +171,7 @@ const App: React.FC = () => {
   const renderLeaderboard = () => {
     const sortedUsers = [...users].sort((a, b) => b.walletBalance - a.walletBalance);
     const top3 = sortedUsers.slice(0, 3);
-    const rest = sortedUsers.slice(3);
-
+    
     const chartData = top3.map(u => ({ name: u.name.split(' ')[0], value: u.walletBalance }));
 
     return (
@@ -188,7 +187,7 @@ const App: React.FC = () => {
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: 'white', fontSize: 12}} />
                 <Tooltip cursor={{fill: 'transparent'}} contentStyle={{borderRadius: 8, border: 'none'}} />
                 <Bar dataKey="value" radius={[4, 4, 0, 0]}>
-                    {chartData.map((entry, index) => (
+                    {chartData.map((_, index) => (
                         <Cell key={`cell-${index}`} fill={index === 0 ? '#fbbf24' : '#e2e8f0'} fillOpacity={index === 0 ? 1 : 0.6} />
                     ))}
                 </Bar>

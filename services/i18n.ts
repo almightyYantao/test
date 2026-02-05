@@ -1,5 +1,3 @@
-import { Language } from '../types';
-
 export const translations = {
   en: {
     appName: "EnergyRewards",
